@@ -8,6 +8,7 @@ export class UserRepository {
 	constructor(
 		@Inject(PG_POOL) private readonly pool : Pool,
 	){}
+
 	async createUser(data: any) {
 		const query = `INSERT INTO users (
 		username,
@@ -22,11 +23,11 @@ export class UserRepository {
 			data.username,
 			data.email,
 			data.password_hash,
-		data.firstname,
-		data.lastname
-	]
+			data.firstname,
+			data.lastname
+		]
 	
-	const result = await this.pool.query(query, values)
-	return result.rows[0]
-}
+		const result = await this.pool.query(query, values)
+		return result.rows[0]
+	}
 }

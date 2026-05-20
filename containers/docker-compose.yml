@@ -1,0 +1,17 @@
+services:
+  db:
+    image: postgres:18-alpine3.23
+    container_name: matcha_db
+    restart: always
+    environment:
+      PGDATA: /var/lib/postgresql/data/matcha
+      POSTGRES_USER: matcha_user
+      POSTGRES_PASSWORD: matcha_pass
+      POSTGRES_DB: matcha
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data/matcha
+      - ../db/setup.sql:/docker-entrypoint-initdb.d/setup.sql
+volumes:
+  pg_data:
