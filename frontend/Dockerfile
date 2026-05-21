@@ -1,0 +1,9 @@
+FROM node:24-alpine3.22
+
+WORKDIR /app/frontend 
+
+COPY frontend/package*.json ./
+
+RUN npm install
+
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
