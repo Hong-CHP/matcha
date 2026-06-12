@@ -7,6 +7,7 @@ import { UserRepository } from './users.repository';
 @Injectable()
 export class UsersService {
   constructor(private readonly usersRepository: UserRepository){}
+  
   async register(createUserDto: CreateUserDto) {
     const password_hash = await bcrypt.hash(createUserDto.password, 10)
     try {

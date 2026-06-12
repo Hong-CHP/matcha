@@ -3,7 +3,7 @@ import { validateEmail, validatePassword, validateUsername } from "../sanitizer/
 import { sanitizeEmail, sanitizePassword, sanitizeUsername } from "../sanitizer/sanitaizer";
 import axios from "axios";
 
-function signUp() {
+function SignUp() {
 	const [uname, setUname] = useState("")
 	const [uEmail, setUEmail] = useState("")
 	const [uPwd, setUPwd] = useState("")
@@ -15,35 +15,52 @@ function signUp() {
 
 
 	async function handleSignUp(e: any) {
-		e.preventDeault()
-
+		e.preventDefault()
+		
+		const newErrors: string[] = [];
 		if (!uname || !uEmail || !uPwd || !uPwdCfm || !firstName || !lastName) {
 			setErrors(["Fields could not be empty."])
 			return
 		}
 
-		setErrors((prev) => ([
-			...prev,
+		if (uPwd !== uPwdCfm) {
+			newErrors.push("Passwords do not match.");
+		}
+
+		newErrors.push(
 			...validateUsername(uname),
 			...validateEmail(uEmail),
-			...validatePassword(uPwd, uname, uEmail),
-		]))
-		if (errors.length > 0)
+			...validatePassword(uPwd, uname, uEmail)
+		)
+
+		if (newErrors.length > 0) {
+			setErrors(newErrors)
 			return
+		}
+		setUname("")
+		setUEmail("")
+		setUPwd("")
+		setUPwdCfm("")
+		setFirstName("")
+		setLastName("")
+		setErrors([])
 		
 		const username = sanitizeUsername(uname)
 		const u_email = sanitizeEmail(uEmail)
 		const u_password = sanitizePassword(uPwd)
 
 		try {
-			const res = await axios.post('auth/refresh',
+			await axios.post('users/register',
 				{
 					username,
 					u_email,
 					u_password,
-					
+					firstName,
+					lastName,
 				}
 			)
+		} catch (err: any) {
+			setErrors([`${err.reponse.status} : ${err.reponse.data}`])
 		}
 	}
 	return (
@@ -80,7 +97,7 @@ function signUp() {
 						<label htmlFor="lastname">Lastname: </label>
 						<input type="text" name="lastname" id="lastname"
 							value={lastName} onChange={(e)=>setLastName(e.target.value)}/>
-					</div>
+					</div>setErrors
 					<div>
 						{errors.length > 0
 							? errors.map((e, i)=>(<p key={i}>{e}</p>))
@@ -96,4 +113,4 @@ function signUp() {
 	)
 }
 
-export default signUp
+export default SignUp
